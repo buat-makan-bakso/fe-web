@@ -9,13 +9,15 @@ import TicketHistory from "./components/menu/TicketHistory";
 import TicketManagement from "./components/menu/TicketManagement";
 import InventarisHistory from "./components/data/InventarisHistory";
 import InventarisManagement from "./components/data/InventarisManagement";
-import PegawaiHistory from "./components/data/PegawaiHistory";
-import PegawaiManagement from "./components/data/PegawaiManagement";
 import PengunjungHistory from "./components/data/PengunjungHistory";
 import Login from "./components/login";
 import Sidebar from "./components/sidebar";
 import Setting from "./pages/Setting";
 import EditProfile from "./pages/EditProfile";
+import EmployeeManagement from "./pages/EmployeeManagement";
+import EmployeeData from "./pages/EmployeeData";
+import CreateEmployee from "./pages/CreateEmployee";
+import EditEmployee from "./pages/EditEmployee";
 
 function App() {
   return (
@@ -73,13 +75,7 @@ function App() {
         <Route path="/pegawai" element={
           <div>
             <Sidebar />
-            <PegawaiHistory />
-          </div>
-        } />
-        <Route path="/kelola-pegawai" element={
-          <div>
-            <Sidebar />
-            <PegawaiManagement />
+            <EmployeeData />
           </div>
         } />
         <Route path="/pengunjung" element={
@@ -98,6 +94,24 @@ function App() {
           <div>
             <Sidebar />
             <Setting />
+          </div>
+        } />
+        <Route path="/kelola-pegawai" element={
+          <div>
+            <Sidebar />
+            <EmployeeManagement />
+          </div>
+        } />
+        <Route path="/tambah-pegawai" element={
+          <div>
+            <Sidebar />
+            <CreateEmployee />
+          </div>
+        } />
+        <Route path="/edit-pegawai/:id" element={
+          <div>
+            <Sidebar />
+            <EditEmployee />
           </div>
         } />
       </Routes>

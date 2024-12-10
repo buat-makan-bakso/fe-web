@@ -1,13 +1,7 @@
 import React from 'react';
 import ProfileDetail from './ProfileDetail';
-import { useNavigate } from "react-router-dom";
 
-const ProfileInfo = ({ profile }) => {
-    const navigate = useNavigate();
-
-    const handleDetailClick = () => {
-        navigate(`/ubah-pengaturan`);
-    };
+const ProfileInfo = ({ profile, onEditClick }) => {
     return (
         <div className="p-6 mb-6 bg-white rounded-lg shadow-sm">
             <h3 className="mb-6 text-xl font-bold text-center">Informasi Pribadi</h3>
@@ -22,7 +16,7 @@ const ProfileInfo = ({ profile }) => {
                 <ProfileDetail label="Alamat" value={profile.address || 'Garut, Jawa Barat'} />
                 <ProfileDetail label="Bio" value={profile.bio || 'Pengelola Agrowisata Tepas Papandayan'} />
             </div>
-            <button className="px-4 py-2 m-5 mx-auto text-white bg-teal-600 rounded" onClick={handleDetailClick}>
+            <button className="px-4 py-2 m-5 mx-auto text-white bg-teal-600 rounded" onClick={onEditClick}>
                 Edit
             </button>
         </div>

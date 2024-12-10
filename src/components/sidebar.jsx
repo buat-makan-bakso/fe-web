@@ -16,19 +16,19 @@ function Sidebar() {
     navigate('/');
   };
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const profileData = await getProfile();
-        if (profileData && profileData.data.username) {
-          setUsername(profileData.data.username);
-          setProfilePicture(profileData.data.profile_picture);
-        }
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
+  const fetchProfile = async () => {
+    try {
+      const profileData = await getProfile();
+      if (profileData && profileData.data.username) {
+        setUsername(profileData.data.username);
+        setProfilePicture(profileData.data.profile_picture);
       }
-    };
-
+    } catch (error) {
+      alert('Gagal memuat data profil!');
+    }
+  };
+  
+  useEffect(() => {
     fetchProfile();
   }, []);
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProfile, updateProfile } from '../services/api/apiProfile';
+import PageHeader from '../components/PageHeader';
 
-const UbahProfile = () => {
+const EditProfile = () => {
     const navigate = useNavigate();
 
     const [profileData, setProfileData] = useState({
@@ -16,12 +17,11 @@ const UbahProfile = () => {
     });
     const [loading, setLoading] = useState(true);
 
-    const fetchProfile = async () => {
+    const handleGetProfile = async () => {
         try {
             const data = await getProfile();
             setProfileData(data.data);
         } catch (error) {
-            console.error('Failed to fetch profile:', error.message);
             alert('Gagal memuat data profil!');
         } finally {
             setLoading(false);
@@ -29,7 +29,7 @@ const UbahProfile = () => {
     };
 
     useEffect(() => {
-        fetchProfile();
+        handleGetProfile();
     }, []);
 
     const handleInputChange = (e) => {
@@ -53,7 +53,6 @@ const UbahProfile = () => {
             alert('Perubahan berhasil disimpan!');
             navigate(-1);
         } catch (error) {
-            console.error('Failed to update profile:', error.message);
             alert('Terjadi kesalahan saat menyimpan perubahan!');
         }
     };
@@ -68,15 +67,10 @@ const UbahProfile = () => {
 
     return (
         <div className="flex-1 min-h-screen p-4 py-10 overflow-y-auto bg-gray-100 lg:ml-64">
-            <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-transparent">Ubah Pengaturan Akun</h2>
-                <div className="flex items-center gap-4 mb-4">
-                    <h2 className="text-2xl font-semibold">Ubah Pengaturan Akun</h2>
-                </div>                <p className="mb-6 text-sm text-gray-600 md:text-base text-start">
-                    Ini adalah halaman berisi ubah foto profil dan informasi pribadi admin Agrowisata Tepas Papandayan.
-                </p>
-            </div>
-
+            <PageHeader
+                title="Ubah Pengaturan Akun"
+                subtitle="Ini adalah halaman berisi ubah foto profil dan informasi pribadi admin Agrowisata Tepas Papandayan."
+            />
             {/* Ubah Foto */}
             <div className="p-4 mb-6 bg-white rounded-lg md:p-6">
                 <h2 className="mb-4 font-semibold text-center">Ubah Foto Profil</h2>
@@ -102,7 +96,7 @@ const UbahProfile = () => {
 
             {/* Ubah Informasi Pribadi */}
             <div className="p-4 mb-6 bg-white rounded-lg md:p-6">
-                <h2 className="mb-4 font-semibold text-center">Ubah Informasi Pribadi</h2>
+                <h3 className="mb-4 font-semibold text-center">Ubah Informasi Pribadi</h3>
                 <div className="space-y-4">
                     <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center">
                         <label htmlFor="username" className="text-gray-600">Username</label>
@@ -191,4 +185,4 @@ const UbahProfile = () => {
     );
 };
 
-export default UbahProfile;
+export default EditProfile;
