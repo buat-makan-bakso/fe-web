@@ -1,38 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
-
+import { getProfile } from '../services/api/apiProfile';
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
 
   const logout = () => {
     localStorage.removeItem('authToken');
-  
     const navigate = useNavigate();
     navigate('/');
   };
-  
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profileData = await getProfile();
+        if (profileData && profileData.data.username) {
+          setUsername(profileData.data.username);
+          setProfilePicture(profileData.data.profile_picture);
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   return (
     <>
       <div className="fixed top-0 left-0 w-full bg-white z-5">
         <div className="flex items-center justify-between px-4 h-14">
           <div className="flex items-center ml-0 md:ml-64">
-            <span className="text-lg font-bold">Halo, Refiani!</span>
+            <span className="text-lg font-bold">Halo, {username || 'User'}!</span>
             <span className="ml-2 text-sm text-gray-500">Selamat Datang Di Verdant</span>
           </div>
           <div className="flex items-center">
             <Link to="/profile" className="flex items-center cursor-pointer">
               <img
-                src="https://th.bing.com/th/id/OIP.9PPdes_WSxaqUQJxWab16AHaHa?rs=1&pid=ImgDetMain" // Ganti dengan path gambar profil yang sesuai
+                src={profilePicture || 'https://th.bing.com/th/id/OIP.9PPdes_WSxaqUQJxWab16AHaHa?rs=1&pid=ImgDetMain'}
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
               />
-              <span className="px-5">Refiani Julianti</span>
+              <span className="px-5">{username || 'Username'}</span>
             </Link>
 
             {/* Hamburger Button */}
@@ -204,8 +219,8 @@ function Sidebar() {
                 </span>
               </Link>
               <Link
-                to="/profile"
-                className={`relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 ${isActive('/profile')
+                to="/pengaturan"
+                className={`relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 ${isActive('/pengaturan')
                   ? 'border-teal-600 text-teal-600 bg-teal-50'
                   : 'border-transparent hover:border-teal-600'
                   } pr-6`}
