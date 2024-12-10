@@ -50,8 +50,8 @@ const Setting = () => {
         <ProfileImage imageUrl={profile.profile_picture} altText={profile.username} />
         <div>
           <h2 className="text-xl font-bold text-start">{profile.username || 'Username'}</h2>
-          <p className="text-gray-600 text-start">{profile.bio || 'Pengelola Agrowisata Tepas Papandayan'}</p>
-          <p className="text-gray-600 text-start">{profile.address || 'Garut, Jawa Barat'}</p>
+          <p className="text-gray-600 text-start">{profile.bio || '-'}</p>
+          <p className="text-gray-600 text-start">{profile.address || '-'}</p>
         </div>
       </div>
 
