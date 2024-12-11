@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import EmployeeForm from "../components/employee/EmployeeForm";
-import useEmployeeHook from "../hooks/useEmployeeHooks";
+import useEmployeeHook from "../hooks/useEmployeeHook";
 
 const CreateEmployee = () => {
   const navigate = useNavigate();

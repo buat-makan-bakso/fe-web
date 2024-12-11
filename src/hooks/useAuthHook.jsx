@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../services/api/apiAuth';
 
-const useAuthHooks = () => {
+const useAuthHook = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -25,4 +25,4 @@ const useAuthHooks = () => {
   return { login, logout, error };
 };
 
-export default useAuthHooks;
+export default useAuthHook;

@@ -5,9 +5,6 @@ const BASE_URL_WEB = `${BASE_URL}/web`;
 
 const api = axios.create({
   baseURL: BASE_URL_WEB,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 api.interceptors.request.use(
@@ -16,6 +13,13 @@ api.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `${token}`;
     }
+
+    if (config.data instanceof FormData) {
+      config.headers['Content-Type'] = 'multipart/form-data';
+    } else if (!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+
     return config;
   },
   (error) => {

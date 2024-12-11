@@ -11,7 +11,7 @@ import InventarisHistory from "./components/data/InventarisHistory";
 import InventarisManagement from "./components/data/InventarisManagement";
 import PengunjungHistory from "./components/data/PengunjungHistory";
 import Login from "./pages/login";
-import Sidebar from "./components/sidebar";
+import Sidebar from "./components/sidebar/Sidebar";
 import Setting from "./pages/Setting";
 import EditProfile from "./pages/EditProfile";
 import EmployeeData from "./pages/EmployeeData";

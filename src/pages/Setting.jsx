@@ -5,10 +5,10 @@ import NotificationSetting from '../components/setting/NotificationSetting';
 import LanguageSetting from '../components/setting/LanguageSetting';
 import PageHeader from '../components/PageHeader';
 import { useNavigate } from "react-router-dom";
-import useProfileHooks from '../hooks/useProfileHook';
+import useProfileHook from '../hooks/useProfileHook';
 
 const Setting = () => {
-  const { profileData, loading } = useProfileHooks();
+  const { profileData, loading } = useProfileHook();
   const [selectedLanguage, setSelectedLanguage] = useState("Bahasa Indonesia");
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ const Setting = () => {
       />
 
       <div className="flex items-center mb-8">
-        <ProfileImage imageUrl={profileData.profile_picture} altText={profileData.username} />
+        <ProfileImage imageUrl={profileData.picture} altText={profileData.username} />
         <div>
           <h2 className="text-xl font-bold text-start">{profileData.username || 'Username'}</h2>
           <p className="text-gray-600 text-start">{profileData.bio || '-'}</p>

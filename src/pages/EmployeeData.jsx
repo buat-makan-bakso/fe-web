@@ -4,7 +4,7 @@ import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import EmployeeTable from "../components/employee/EmployeeTable";
 import SearchBar from "../components/SearchBar";
-import useEmployeeHook from "../hooks/useEmployeeHooks";
+import useEmployeeHook from "../hooks/useEmployeeHook";
 
 const EmployeeData = () => {
   const navigate = useNavigate();
@@ -69,19 +69,30 @@ const EmployeeData = () => {
             />
           </div>
         </div>
-        <EmployeeTable employees={employees} onDelete={handleDeleteEmployee} onEdit={updateEmployeeRoute} />
-        <div className="flex flex-col items-end justify-between gap-4 p-4 md:flex-row">
-          <p className="text-sm text-gray-600">
-            Showing {(page - 1) * 4 + 1} to {Math.min(page * 4, total)} of {total} entries
-          </p>
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-            onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
-            onNext={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-          />
-        </div>
+        {total === 0 ? (
+          <div className="p-4 text-center text-gray-600">
+            <p>Tidak ada data pegawai saat ini. Silakan tambahkan pegawai baru.</p>
+          </div>
+        ) : (
+          <EmployeeTable employees={employees} onDelete={handleDeleteEmployee} onEdit={updateEmployeeRoute} />
+        )}
+
+        {total > 0 && (
+          <div className="flex flex-col items-end justify-between gap-4 p-4 md:flex-row">
+            <p className="text-sm text-gray-600">
+              Showing {(page - 1) * 4 + 1} to {Math.min(page * 4, total)} of {total} entries
+            </p>
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
+              onNext={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            />
+          </div>
+
+        )}
+
       </div>
       <div className="flex justify-center mt-4">
         <button

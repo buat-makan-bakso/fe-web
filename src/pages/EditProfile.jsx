@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
-import useProfileHooks from '../hooks/useProfileHook';
+import useProfileHook from '../hooks/useProfileHook';
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const EditProfile = () => {
         handleInputChange,
         handleImageChange,
         handleUpdateProfile,
-    } = useProfileHooks();
+    } = useProfileHook();
 
     const handleSave = async () => {
         await handleUpdateProfile();
@@ -20,6 +20,13 @@ const EditProfile = () => {
 
     const handleCancel = () => {
         navigate(-1);
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            handleImageChange(e);
+        }
     };
 
     if (loading) {
@@ -38,7 +45,7 @@ const EditProfile = () => {
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-32 h-32 overflow-hidden rounded-full">
                         <img
-                            src={profileData.profile_picture || 'https://via.placeholder.com/150'}
+                            src={profileData.picture || 'https://via.placeholder.com/150'}
                             alt="Profile"
                             className="object-cover w-full h-full"
                         />
@@ -49,8 +56,7 @@ const EditProfile = () => {
                             type="file"
                             className="hidden"
                             accept="image/*"
-                            onChange={handleImageChange}
-                        />
+                            onChange={handleImageUpload}                        />
                     </label>
                 </div>
             </div>

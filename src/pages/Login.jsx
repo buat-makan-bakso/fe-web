@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import useAuthHooks from '../hooks/useAuthHooks';
+import useAuthHook from '../hooks/useAuthHook';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, error } = useAuthHooks();
+  const { login, error } = useAuthHook();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

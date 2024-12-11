@@ -17,3 +17,12 @@ export const updateProfile = async (profileData) => {
     throw new Error('Update profile data failed! ' + error.message);
   }
 };
+
+export const addProfilePicture = async (profilePicture) => {
+  try {
+    const response = await api.post('/admin/picture', profilePicture);
+    return response.data;
+  } catch (error) {
+    throw new Error('Add profile picture failed! ' + error.message);
+  }
+};

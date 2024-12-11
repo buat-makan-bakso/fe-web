@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import EmployeeForm from "../components/employee/EmployeeForm";
-import useEmployeeHook from "../hooks/useEmployeeHooks";
+import useEmployeeHook from "../hooks/useEmployeeHook";
 
 const EditEmployee = () => {
   const { id } = useParams();

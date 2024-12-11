@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getProfile, updateProfile } from '../services/api/apiProfile';
+import { getProfile, updateProfile, addProfilePicture } from '../services/api/apiProfile';
 
-const useProfileHooks = () => {
+const useProfileHook = () => {
     const [profileData, setProfileData] = useState({
         email: '',
         username: '',
@@ -12,6 +12,7 @@ const useProfileHooks = () => {
         profile_picture: null,
     });
     const [loading, setLoading] = useState(true);
+    const [uploading, setUploading] = useState(false);
 
     const handleGetProfile = async () => {
         try {
@@ -33,6 +34,29 @@ const useProfileHooks = () => {
         }
     };
 
+    const handleAddProfilePicture = async (file) => {
+        if (!file) {
+            alert('Harap pilih file gambar!');
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('picture', file);
+    
+        setUploading(true);
+        try {
+            const response = await addProfilePicture(formData);
+            alert('Foto profil berhasil diunggah!');
+            await handleGetProfile(); 
+        } catch (error) {
+            alert('Terjadi kesalahan saat mengunggah foto profil!');
+            console.error('Error Details:', error.response?.data || error.message);
+        } finally {
+            setUploading(false);
+        }
+    };
+    
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProfileData((prev) => ({ ...prev, [name]: value }));
@@ -41,10 +65,7 @@ const useProfileHooks = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setProfileData((prev) => ({
-                ...prev,
-                profile_picture: URL.createObjectURL(file),
-            }));
+            handleAddProfilePicture(file);
         }
     };
 
@@ -55,6 +76,7 @@ const useProfileHooks = () => {
     return {
         profileData,
         loading,
+        uploading,
         handleInputChange,
         handleImageChange,
         handleUpdateProfile,
@@ -62,4 +84,4 @@ const useProfileHooks = () => {
     };
 };
 
-export default useProfileHooks;
+export default useProfileHook;
