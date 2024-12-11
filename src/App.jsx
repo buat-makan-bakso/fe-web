@@ -5,8 +5,6 @@ import './App.css'
 import DashboardContent from "./components/menu/DashboardContent";
 import TransactionDetail from "./components/menu/TransactionDetail";
 import TransactionHistory from "./components/menu/TransactionHistory";
-import TicketHistory from "./components/menu/TicketHistory";
-import TicketManagement from "./components/menu/TicketManagement";
 import InventarisHistory from "./components/data/InventarisHistory";
 import InventarisManagement from "./components/data/InventarisManagement";
 import PengunjungHistory from "./components/data/PengunjungHistory";
@@ -17,6 +15,9 @@ import EditProfile from "./pages/EditProfile";
 import EmployeeData from "./pages/EmployeeData";
 import CreateEmployee from "./pages/CreateEmployee";
 import EditEmployee from "./pages/EditEmployee";
+import TicketData from "./pages/TicketData";
+import CreateTicket from "./pages/CreateTicket";
+import EditTicket from "./pages/EditTicket";
 
 function App() {
   return (
@@ -50,13 +51,19 @@ function App() {
         <Route path="/tiket" element={
           <div>
             <Sidebar />
-            <TicketHistory />
+            <TicketData />
           </div>
         } />
         <Route path="/kelola-tiket" element={
           <div>
             <Sidebar />
-            <TicketManagement />
+            <CreateTicket />
+          </div>
+        } />
+        <Route path="/edit-tiket/:id" element={
+          <div>
+            <Sidebar />
+            <EditTicket />
           </div>
         } />
         <Route path="/inventaris" element={

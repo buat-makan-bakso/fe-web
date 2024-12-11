@@ -1,12 +1,27 @@
-import React from "react";
 
-const SearchBar = ({ query, onQueryChange, onSearch }) => {
+
+import React, { useState } from "react";
+
+const SearchBar = ({ onQueryChange, onSearch }) => {
+  const [localQuery, setLocalQuery] = useState("");
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setLocalQuery(value);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    onQueryChange(localQuery);
+    onSearch(e);
+  };
   return (
-    <form className="relative flex-grow" onSubmit={onSearch}>
+    <form onSubmit={handleSearch} className="relative flex-grow">
+
       <input
         type="text"
-        value={query}
-        onChange={(e) => onQueryChange(e.target.value)}
+        value={localQuery}
+        onChange={handleInputChange}
         placeholder="Pencarian"
         className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
       />
