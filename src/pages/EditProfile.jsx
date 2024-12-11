@@ -1,60 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProfile, updateProfile } from '../services/api/apiProfile';
 import PageHeader from '../components/PageHeader';
+import useProfileHooks from '../hooks/useProfileHook';
 
 const EditProfile = () => {
     const navigate = useNavigate();
-
-    const [profileData, setProfileData] = useState({
-        email: '',
-        username: '',
-        address: '',
-        phone_number: '',
-        password: '',
-        bio: '',
-        profile_picture: null,
-    });
-    const [loading, setLoading] = useState(true);
-
-    const handleGetProfile = async () => {
-        try {
-            const data = await getProfile();
-            setProfileData(data.data);
-        } catch (error) {
-            alert('Gagal memuat data profil!');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        handleGetProfile();
-    }, []);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setProfileData((prevData) => ({ ...prevData, [name]: value }));
-    };
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setProfileData((prevData) => ({
-                ...prevData,
-                profile_picture: URL.createObjectURL(file),
-            }));
-        }
-    };
+    const {
+        profileData,
+        loading,
+        handleInputChange,
+        handleImageChange,
+        handleUpdateProfile,
+    } = useProfileHooks();
 
     const handleSave = async () => {
-        try {
-            await updateProfile(profileData);
-            alert('Perubahan berhasil disimpan!');
-            navigate(-1);
-        } catch (error) {
-            alert('Terjadi kesalahan saat menyimpan perubahan!');
-        }
+        await handleUpdateProfile();
+        navigate(-1);
     };
 
     const handleCancel = () => {
@@ -176,7 +137,11 @@ const EditProfile = () => {
                 </button>
                 <button
                     onClick={handleSave}
-                    className="w-full px-6 py-2 text-white bg-teal-600 rounded md:w-auto hover:bg-teal-700"
+                    disabled={!profileData.password}
+                    className={`w-full px-6 py-2 rounded md:w-auto ${profileData.password
+                            ? 'bg-teal-600 text-white hover:bg-teal-700'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
                 >
                     Simpan
                 </button>

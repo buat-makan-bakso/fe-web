@@ -1,26 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../services/api/apiAuth';
+import useAuthHooks from '../hooks/useAuthHooks';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const { login, error } = useAuthHooks();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    try {
-      const data = await loginAdmin(email, password);
-      localStorage.setItem('authToken', data.data.token);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Email atau kata sandi salah!');
-    }
+    await login(email, password);
   };
+
 
   return (
     <div className="grid min-h-screen grid-cols-2 gap-0">

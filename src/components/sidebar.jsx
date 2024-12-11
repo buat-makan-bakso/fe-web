@@ -1,53 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getProfile } from '../services/api/apiProfile';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import useProfileHooks from "../hooks/useProfileHook";
+import useAuthHooks from "../hooks/useAuthHooks";
 
 function Sidebar() {
+  const { profileData } = useProfileHooks();
+  const { logout } = useAuthHooks();
   const [isOpen, setIsOpen] = useState(false);
-  const [username, setUsername] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
-
-  const logout = () => {
-    localStorage.removeItem('authToken');
-    const navigate = useNavigate();
-    navigate('/');
-  };
-
-  const fetchProfile = async () => {
-    try {
-      const profileData = await getProfile();
-      if (profileData && profileData.data.username) {
-        setUsername(profileData.data.username);
-        setProfilePicture(profileData.data.profile_picture);
-      }
-    } catch (error) {
-      alert('Gagal memuat data profil!');
-    }
-  };
-  
-  useEffect(() => {
-    fetchProfile();
-  }, []);
 
   return (
     <>
       <div className="fixed top-0 left-0 w-full bg-white z-5">
         <div className="flex items-center justify-between px-4 h-14">
           <div className="flex items-center ml-0 md:ml-64">
-            <span className="text-lg font-bold">Halo, {username || 'User'}!</span>
+            <span className="text-lg font-bold">Halo, {profileData.username || 'User'}!</span>
             <span className="ml-2 text-sm text-gray-500">Selamat Datang Di Verdant</span>
           </div>
           <div className="flex items-center">
             <Link to="/profile" className="flex items-center cursor-pointer">
               <img
-                src={profilePicture || 'https://th.bing.com/th/id/OIP.9PPdes_WSxaqUQJxWab16AHaHa?rs=1&pid=ImgDetMain'}
+                src={
+                  profileData.profile_picture ||
+                  'https://th.bing.com/th/id/OIP.9PPdes_WSxaqUQJxWab16AHaHa?rs=1&pid=ImgDetMain'
+                }
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
               />
-              <span className="px-5">{username || 'Username'}</span>
+              <span className="px-5">{profileData.username || 'Username'}</span>
             </Link>
 
             {/* Hamburger Button */}
@@ -66,7 +48,11 @@ function Sidebar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                  d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                  d={
+                    isOpen
+                      ? "M6 18L18 6M6 6l12 12"
+                      : "M4 6h16M4 12h16M4 18h16"
+                  }
                 ></path>
               </svg>
             </button>
@@ -75,22 +61,14 @@ function Sidebar() {
       </div>
       <div
         className={`fixed top-0 left-0 w-64 bg-white h-full border-r transform ${isOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300  md:translate-x-0 z-40`}
+          } transition-transform duration-300 md:translate-x-0 z-40`}
       >
         {/* Profil Pengguna */}
         <div className="flex items-center px-5 py-5">
-          {/* Avatar */}
-          {/* <img
-              src="https://via.placeholder.com/40"
-              alt="User Avatar"
-              className="w-10 h-10 mr-3 rounded-full"
-            /> */}
-          {/* Nama dan Role */}
           <div className="text-sm">
-            <h2 className="text-3xl font-bold text-transparent font-poppins bg-gradient-to-r from-teal-500 via-teal-600 to-teal-700 bg-clip-text">VERDANT</h2>
-
-            {/* <div className="font-medium">Refiani Julianti</div> */}
-            {/* <div className="text-xs text-gray-500">Admin</div> */}
+            <h2 className="text-3xl font-bold text-transparent font-poppins bg-gradient-to-r from-teal-500 via-teal-600 to-teal-700 bg-clip-text">
+              VERDANT
+            </h2>
           </div>
         </div>
         <div className="flex-grow overflow-x-hidden overflow-y-auto">
@@ -256,6 +234,7 @@ function Sidebar() {
             </Link>
           </li>
         </div>
+
       </div>
     </>
   );

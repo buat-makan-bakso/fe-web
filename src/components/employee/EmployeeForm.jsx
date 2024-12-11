@@ -84,15 +84,20 @@ const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit }) =>
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 4v16m8-8H4"
-                            />
+                            {isEdit ? (
+                                <path fill="currentColor" d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-9 11q1.25 0 2.125-.875T15 15t-.875-2.125T12 12t-2.125.875T9 15t.875 2.125T12 18m-6-8h9V6H6z" />
+                            ) : (
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M12 5v14m7-7H5"
+                                />
+                            )}
                         </svg>
                         {isEdit ? "Simpan" : "Tambah"}
                     </button>
+
                 </div>
             </div>
         </div>

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { getProfile } from '../services/api/apiProfile';
+import React, { useState } from 'react';
 import ProfileImage from '../components/profile/ProfileImage';
 import ProfileInfo from '../components/profile/ProfileInfo';
 import NotificationSetting from '../components/setting/NotificationSetting';
 import LanguageSetting from '../components/setting/LanguageSetting';
 import PageHeader from '../components/PageHeader';
 import { useNavigate } from "react-router-dom";
+import useProfileHooks from '../hooks/useProfileHook';
 
 const Setting = () => {
-  const [profile, setProfile] = useState(null);
+  const { profileData, loading } = useProfileHooks();
   const [selectedLanguage, setSelectedLanguage] = useState("Bahasa Indonesia");
   const navigate = useNavigate();
 
@@ -16,22 +16,9 @@ const Setting = () => {
     setSelectedLanguage(language);
   };
 
-  const handleGetProfile = async () => {
-    try {
-      const data = await getProfile();
-      setProfile(data.data);
-    } catch (error) {
-      alert('Gagal memuat data profil!');
-    }
-  };
-
-  useEffect(() => {
-    handleGetProfile();
-  }, []);
-
-  if (!profile) {
+  if (loading) {
     return <div>Memuat data...</div>;
-  }
+}
 
   const handleEdit = () => {
     navigate(`/ubah-pengaturan`);
@@ -51,15 +38,15 @@ const Setting = () => {
       />
 
       <div className="flex items-center mb-8">
-        <ProfileImage imageUrl={profile.profile_picture} altText={profile.username} />
+        <ProfileImage imageUrl={profileData.profile_picture} altText={profileData.username} />
         <div>
-          <h2 className="text-xl font-bold text-start">{profile.username || 'Username'}</h2>
-          <p className="text-gray-600 text-start">{profile.bio || '-'}</p>
-          <p className="text-gray-600 text-start">{profile.address || '-'}</p>
+          <h2 className="text-xl font-bold text-start">{profileData.username || 'Username'}</h2>
+          <p className="text-gray-600 text-start">{profileData.bio || '-'}</p>
+          <p className="text-gray-600 text-start">{profileData.address || '-'}</p>
         </div>
       </div>
 
-      <ProfileInfo profile={profile} onEditClick={handleEdit} />
+      <ProfileInfo profile={profileData} onEditClick={handleEdit} />
       <NotificationSetting />
       <LanguageSetting
         selectedLanguage={selectedLanguage}

@@ -1,53 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getEmployees, deleteEmployee } from "../services/api/apiEmployee";
 import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import EmployeeTable from "../components/employee/EmployeeTable";
 import SearchBar from "../components/SearchBar";
+import useEmployeeHook from "../hooks/useEmployeeHooks";
 
 const EmployeeData = () => {
   const navigate = useNavigate();
-  const [employees, setEmployees] = useState([]);
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
-  const [total, setTotal] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const {
+    employees,
+    page,
+    setPage,
+    total,
+    totalPages,
+    setQuery,
+    handleGetEmployees,
+    handleDeleteEmployee,
+  } = useEmployeeHook();
 
-  const handleGetEmployees = async () => {
-    try {
-      const response = await getEmployees(page, query);
-      setEmployees(response.data.rows);
-      setTotal(response.data.total);
-      setTotalPages(response.data.totalPages);
-    } catch (error) {
-      alert("Gagal mengambil data pegawai!");
-    }
+  const createEmployeeRoute = () => {
+    navigate(`/kelola-pegawai`);
   };
 
-  useEffect(() => {
-    handleGetEmployees();
-  }, [page, query]);
-
-  const handleCreateEmployee = () => {
-    navigate(`/tambah-pegawai`);
-  };
-
-  const handleUpdateEmployee = (id) => {
+  const updateEmployeeRoute = (id) => {
     navigate(`/edit-pegawai/${id}`);
-  };
-
-  const handleDeleteEmployee = async (id) => {
-    const confirmDelete = window.confirm("Yakin ingin menghapus data pegawai ini?");
-    if (confirmDelete) {
-      try {
-        await deleteEmployee(id);
-        alert("Pegawai berhasil dihapus!");
-        handleGetEmployees();
-      } catch (error) {
-        alert("Gagal menghapus pegawai. Silakan coba lagi!");
-      }
-    }
   };
 
   return (
@@ -82,7 +59,7 @@ const EmployeeData = () => {
               Filter
             </button>
             <SearchBar
-              query={query}
+              query={setQuery}
               onQueryChange={setQuery}
               onSearch={(e) => {
                 e.preventDefault();
@@ -92,7 +69,7 @@ const EmployeeData = () => {
             />
           </div>
         </div>
-        <EmployeeTable employees={employees} onDelete={handleDeleteEmployee} onEdit={handleUpdateEmployee} />
+        <EmployeeTable employees={employees} onDelete={handleDeleteEmployee} onEdit={updateEmployeeRoute} />
         <div className="flex flex-col items-end justify-between gap-4 p-4 md:flex-row">
           <p className="text-sm text-gray-600">
             Showing {(page - 1) * 4 + 1} to {Math.min(page * 4, total)} of {total} entries
@@ -109,7 +86,7 @@ const EmployeeData = () => {
       <div className="flex justify-center mt-4">
         <button
           className="w-full px-6 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 md:w-auto"
-          onClick={handleCreateEmployee}
+          onClick={createEmployeeRoute}
         >
           Kelola Pegawai
         </button>

@@ -10,11 +10,10 @@ import TicketManagement from "./components/menu/TicketManagement";
 import InventarisHistory from "./components/data/InventarisHistory";
 import InventarisManagement from "./components/data/InventarisManagement";
 import PengunjungHistory from "./components/data/PengunjungHistory";
-import Login from "./components/login";
+import Login from "./pages/login";
 import Sidebar from "./components/sidebar";
 import Setting from "./pages/Setting";
 import EditProfile from "./pages/EditProfile";
-import EmployeeManagement from "./pages/EmployeeManagement";
 import EmployeeData from "./pages/EmployeeData";
 import CreateEmployee from "./pages/CreateEmployee";
 import EditEmployee from "./pages/EditEmployee";
@@ -96,13 +95,7 @@ function App() {
             <Setting />
           </div>
         } />
-        <Route path="/kelola-pegawai" element={
-          <div>
-            <Sidebar />
-            <EmployeeManagement />
-          </div>
-        } />
-        <Route path="/tambah-pegawai" element={
+        <Route path="kelola-pegawai" element={
           <div>
             <Sidebar />
             <CreateEmployee />
