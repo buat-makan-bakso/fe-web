@@ -4,18 +4,18 @@ import "react-loading-skeleton/dist/skeleton.css";
 import ActionButton from "../ActionButton";
 import { formatPrice } from "../../utils/formatPrice";
 
-const TicketTable = ({ tickets, onDelete, onEdit, isBusy }) => {
+const InventoryTable = ({ inventorys, onDelete, onEdit, isBusy }) => {
   return (
     <SkeletonTheme baseColor="#d1d1d1" highlightColor="#aaaaaa">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[800px]">
           <thead>
             <tr className="text-left border-b bg-gray-50">
-              <th className="px-4 py-3 text-sm font-semibold">JENIS TIKET</th>
+              <th className="px-4 py-3 text-sm font-semibold">GAMBAR</th>
+              <th className="px-4 py-3 text-sm font-semibold">KODE</th>
+              <th className="px-4 py-3 text-sm font-semibold">NAMA BARANG</th>
+              <th className="px-4 py-3 text-sm font-semibold">JUMLAH</th>
               <th className="px-4 py-3 text-sm font-semibold">HARGA</th>
-              <th className="px-4 py-3 text-sm font-semibold">STOK</th>
-              <th className="px-4 py-3 text-sm font-semibold">BATAS PENGUNJUNG</th>
-              <th className="px-4 py-3 text-sm font-semibold">DETAIL</th>
               <th className="px-4 py-3 text-sm font-semibold">AKSI</th>
             </tr>
           </thead>
@@ -45,22 +45,28 @@ const TicketTable = ({ tickets, onDelete, onEdit, isBusy }) => {
                       </td>
                     </tr>
                   ))
-              : tickets.map((ticket) => (
-                  <tr key={ticket.id} className="border-b">
-                    <td className="px-4 py-4 text-sm">{ticket.name}</td>
-                    <td className="px-4 py-4 text-sm">{formatPrice(ticket.price)}</td>
-                    <td className="px-4 py-4 text-sm">{ticket.stock_quantity}</td>
-                    <td className="px-4 py-4 text-sm">{ticket.visitor_quantity}</td>
-                    <td className="px-4 py-4 text-sm">{ticket.description}</td>
+              : inventorys.map((inventory) => (
+                  <tr key={inventory.id} className="border-b">
+                    <td className="px-4 py-4 text-sm">
+                      <img
+                        src={inventory.picture}
+                        alt={inventory.name}
+                        className="object-cover w-12 h-12"
+                      />
+                    </td>
+                    <td className="px-4 py-4 text-sm">{inventory.code}</td>
+                    <td className="px-4 py-4 text-sm">{inventory.name}</td>
+                    <td className="px-4 py-4 text-sm">{inventory.stock_quantity}</td>
+                    <td className="px-4 py-4 text-sm">{formatPrice(inventory.price)}</td>
                     <td className="px-4 py-4">
                       <div className="flex justify-start gap-2">
                         <ActionButton
                           type="edit"
-                          onClick={() => onEdit(ticket.id)}
+                          onClick={() => onEdit(inventory.id)}
                         />
                         <ActionButton
                           type="delete"
-                          onClick={() => onDelete(ticket.id)}
+                          onClick={() => onDelete(inventory.id)}
                         />
                       </div>
                     </td>
@@ -73,4 +79,4 @@ const TicketTable = ({ tickets, onDelete, onEdit, isBusy }) => {
   );
 };
 
-export default TicketTable;
+export default InventoryTable;

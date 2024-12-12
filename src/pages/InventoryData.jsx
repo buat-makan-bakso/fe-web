@@ -2,15 +2,15 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
-import EmployeeTable from "../components/employee/EmployeeTable";
+import InventoryTable from "../components/inventory/InventoryTable";
 import SearchBar from "../components/SearchBar";
-import useEmployeeHook from "../hooks/useEmployeeHook";
+import useInventoryHook from "../hooks/useInventoryHook";
 import ConfirmModal from "../components/ConfirmModal";
 
-const EmployeeData = () => {
+const InventoryData = () => {
   const navigate = useNavigate();
   const {
-    employees,
+    inventorys,
     page,
     setPage,
     total,
@@ -21,22 +21,22 @@ const EmployeeData = () => {
     confirmDelete,
     cancelDelete,
     proceedDelete,
-    } = useEmployeeHook();
+    } = useInventoryHook();
 
-  const createEmployeeRoute = () => {
-    navigate(`/kelola-pegawai`);
+  const createInventoryRoute = () => {
+    navigate(`/kelola-inventaris`);
   };
 
-  const updateEmployeeRoute = (id) => {
-    navigate(`/edit-pegawai/${id}`);
+  const updateInventoryRoute = (id) => {
+    navigate(`/edit-inventaris/${id}`);
   };
 
 
   return (
     <div className="flex-1 min-h-screen p-4 py-10 bg-gray-100 lg:ml-64">
       <PageHeader
-        title="Data Pegawai"
-        subtitle="Ini adalah halaman untuk melihat data pegawai Agrowisata Tepas Papandayan."
+        title="Data Inventaris"
+        subtitle="Ini adalah halaman untuk melihat data inventaris Agrowisata Tepas Papandayan."
         icon={
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -74,13 +74,13 @@ const EmployeeData = () => {
         </div>
         {total === 0 && !isBusy() ? (
           <div className="p-4 text-center text-gray-600">
-            <p>Tidak ada data pegawai saat ini. Silakan tambahkan pegawai baru.</p>
+            <p>Tidak ada data inventaris saat ini. Silakan tambahkan inventaris baru.</p>
           </div>
         ) : (
-          <EmployeeTable
-            employees={employees}
+          <InventoryTable
+            inventorys={inventorys}
             onDelete={confirmDelete}
-            onEdit={updateEmployeeRoute}
+            onEdit={updateInventoryRoute}
             isBusy={isBusy}
           />
         )}
@@ -102,9 +102,9 @@ const EmployeeData = () => {
       <div className="flex justify-center mt-4">
         <button
           className="w-full px-6 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 md:w-auto"
-          onClick={createEmployeeRoute}
+          onClick={createInventoryRoute}
         >
-          Kelola Pegawai
+          Kelola Inventaris
         </button>
       </div>
       <ConfirmModal
@@ -112,10 +112,10 @@ const EmployeeData = () => {
         onRequestClose={cancelDelete}
         onConfirm={proceedDelete}
         title="Konfirmasi Hapus"
-        message="Apakah Anda yakin ingin menghapus pegawai ini?"
+        message="Apakah Anda yakin ingin menghapus inventaris ini?"
       />
     </div>
   );
 };
 
-export default EmployeeData;
+export default InventoryData;

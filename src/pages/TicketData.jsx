@@ -5,6 +5,7 @@ import Pagination from "../components/Pagination";
 import TicketTable from "../components/ticket/TicketTable";
 import SearchBar from "../components/SearchBar";
 import useTicketHook from "../hooks/useTicketHook";
+import ConfirmModal from "../components/ConfirmModal";
 
 const TicketData = () => {
   const navigate = useNavigate();
@@ -15,9 +16,12 @@ const TicketData = () => {
     total,
     totalPages,
     setQuery,
-    handleGetTickets,
-    handleDeleteTicket,
-  } = useTicketHook();
+    isBusy,
+    showModal,
+    confirmDelete,
+    cancelDelete,
+    proceedDelete,
+    } = useTicketHook();
 
   const createTicketRoute = () => {
     navigate(`/kelola-tiket`);
@@ -26,6 +30,7 @@ const TicketData = () => {
   const updateTicketRoute = (id) => {
     navigate(`/edit-tiket/${id}`);
   };
+
 
   return (
     <div className="flex-1 min-h-screen p-4 py-10 bg-gray-100 lg:ml-64">
@@ -59,24 +64,26 @@ const TicketData = () => {
               Filter
             </button>
             <SearchBar
-  onQueryChange={(query) => setQuery(query)} 
-  onSearch={(e) => {
-    e.preventDefault();
-    setPage(1); 
-    handleGetTickets();
-  }}
-/>
-
+              onQueryChange={(query) => setQuery(query)}
+              onSearch={(e) => {
+                e.preventDefault();
+                setPage(1);
+              }}
+            />
           </div>
         </div>
-        {total === 0 ? (
+        {total === 0 && !isBusy() ? (
           <div className="p-4 text-center text-gray-600">
             <p>Tidak ada data tiket saat ini. Silakan tambahkan tiket baru.</p>
           </div>
         ) : (
-          <TicketTable tickets={tickets} onDelete={handleDeleteTicket} onEdit={updateTicketRoute} />
+          <TicketTable
+            tickets={tickets}
+            onDelete={confirmDelete}
+            onEdit={updateTicketRoute}
+            isBusy={isBusy}
+          />
         )}
-
         {total > 0 && (
           <div className="flex flex-col items-end justify-between gap-4 p-4 md:flex-row">
             <p className="text-sm text-gray-600">
@@ -90,9 +97,7 @@ const TicketData = () => {
               onNext={() => setPage((prev) => Math.min(prev + 1, totalPages))}
             />
           </div>
-
         )}
-
       </div>
       <div className="flex justify-center mt-4">
         <button
@@ -102,6 +107,13 @@ const TicketData = () => {
           Kelola Tiket
         </button>
       </div>
+      <ConfirmModal
+        isOpen={showModal}
+        onRequestClose={cancelDelete}
+        onConfirm={proceedDelete}
+        title="Konfirmasi Hapus"
+        message="Apakah Anda yakin ingin menghapus tiket ini?"
+      />
     </div>
   );
 };

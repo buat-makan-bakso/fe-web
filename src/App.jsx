@@ -5,8 +5,6 @@ import './App.css'
 import DashboardContent from "./components/menu/DashboardContent";
 import TransactionDetail from "./components/menu/TransactionDetail";
 import TransactionHistory from "./components/menu/TransactionHistory";
-import InventarisHistory from "./components/data/InventarisHistory";
-import InventarisManagement from "./components/data/InventarisManagement";
 import PengunjungHistory from "./components/data/PengunjungHistory";
 import Login from "./pages/login";
 import Sidebar from "./components/sidebar/Sidebar";
@@ -18,6 +16,10 @@ import EditEmployee from "./pages/EditEmployee";
 import TicketData from "./pages/TicketData";
 import CreateTicket from "./pages/CreateTicket";
 import EditTicket from "./pages/EditTicket";
+import InventoryData from "./pages/InventoryData";
+import EditInventory from "./pages/EditInventory";
+import CreateInventory from "./pages/CreateInventory";
+
 
 function App() {
   return (
@@ -69,13 +71,19 @@ function App() {
         <Route path="/inventaris" element={
           <div>
             <Sidebar />
-            <InventarisHistory />
+            <InventoryData />
           </div>
         } />
         <Route path="/kelola-inventaris" element={
           <div>
             <Sidebar />
-            <InventarisManagement />
+            <CreateInventory />
+          </div>
+        } />
+        <Route path="/edit-inventaris/:id" element={
+          <div>
+            <Sidebar />
+            <EditInventory />
           </div>
         } />
         <Route path="/pegawai" element={

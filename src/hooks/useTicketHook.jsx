@@ -1,84 +1,174 @@
-import { useState, useEffect } from "react";
-import { getTickets, deleteTicket, getTicketById, updateTicket, createTicket } from "../services/api/apiTicket";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import Modal from "react-modal"; 
+import {
+  getTickets,
+  deleteTicket,
+  getTicketById,
+  updateTicket,
+  createTicket,
+} from "../services/api/apiTicket";
+import { toast } from "react-toastify";
+Modal.setAppElement("#root");
 
 const useTicketHook = () => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [tickets, setTickets] = useState([]);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const navigate = useNavigate();
   const [ticketData, setTicketData] = useState({
-    name: '',
-    price: '',
-    stock_quantity: '',
-    visitor_quantity: '',
-    description: '',
+    name: "",
+    price: "",
+    stock_quantity: "",
+    visitor_quantity: "",
+    description: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const isBusy = () => loading || uploading || updating;
+
+  const [showModal, setShowModal] = useState(false); 
+  const [selectedTicketId, setSelectedTicketId] = useState(null); 
+
+
+  const setLoadingState = (type, value) => {
+    if (type === "loading") {
+      setLoading(value);
+    } else if (type === "uploading") {
+      setUploading(value);
+    } else if (type === "updating") {
+      setUpdating(value);
+    }
+  };
+
+
   const handleGetTickets = async () => {
+    setLoadingState("loading", true);
     try {
       const response = await getTickets(page, query);
       setTickets(response.data.rows);
       setTotal(response.data.total);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      alert("Gagal mengambil data tiket!");
+      const errorMessage = "Gagal mengambil data tiket!";
+      toast.error(errorMessage);
+    } finally {
+      setLoadingState("loading", false);
     }
   };
 
   const handleDeleteTicket = async (id) => {
-    const confirmDelete = window.confirm("Yakin ingin menghapus data tiket ini?");
-    if (confirmDelete) {
+
+      setLoadingState("loading", true);
       try {
         await deleteTicket(id);
-        alert("Tiket berhasil dihapus!");
+        toast.success("Tiket berhasil dihapus!");
         handleGetTickets();
       } catch (error) {
-        alert("Gagal menghapus tiket. Silakan coba lagi!");
+        const errorMessage = "Gagal menghapus tiket. Silakan coba lagi!";
+        toast.error(errorMessage);
+      } finally {
+        setLoadingState("loading", false);
+        setShowModal(false); 
       }
+    
+  };
+
+  const handleGetTicketById = useCallback(async (id) => {
+    setLoadingState("loading", true);
+    try {
+      const response = await getTicketById(id);
+      setTicketData(response.data);
+    } catch (error) {
+      const errorMessage = "Gagal mengambil data tiket!";
+      toast.error(errorMessage);
+    } finally {
+      setLoadingState("loading", false);
+    }
+  }, []);
+
+  const handleUpdateTicket = async (id) => {
+    setLoadingState("updating", true);
+    try {
+      await updateTicket(id, ticketData);
+      toast.success("Tiket berhasil diperbarui!");
+      handleGetTickets();
+      navigate(-1);
+    } catch (error) {
+      const errorMessage = "Gagal memperbarui tiket!";
+      toast.error(errorMessage);
+
+    } finally {
+      setLoadingState("updating", false);
     }
   };
 
-  const handleGetTicketById = async (id) => {
+  const handleCreateTicket = async () => {
+    setLoadingState("updating", true);
     try {
-      const data = await getTicketById(id);
+      await createTicket(ticketData);
+      toast.success("Tiket berhasil ditambahkan!");
       setTicketData({
-        name: data.name,
-        price: data.price,
-        stock_quantity: data.stock_quantity,
-        visitor_quantity: data.visitor_quantity,
-        description: data.description,
+        name: "",
+        price: "",
+        stock_quantity: "",
+        visitor_quantity: "",
+        description: "",
       });
+      handleGetTickets();
     } catch (error) {
-      alert("Gagal mengambil data tiket!");
+      const errorMessage = "Gagal menambahkan tiket!";
+      toast.error(errorMessage);
+    } finally {
+      setLoadingState("updating", false);
     }
   };
 
-  const handleUpdateTicket = async (id, updatedData) => {
-    try {
-      await updateTicket(id, updatedData);
-      alert("Tiket berhasil diperbarui!");
-    } catch (error) {
-      alert("Gagal memperbarui tiket!");
-    }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setTicketData((prevData) => ({ ...prevData, [name]: value }));
+
+    const { price, stock_quantity, visitor_quantity } = { ...ticketData, [name]: value };
+
+    const isButtonDisabled =
+      !(price >= 1000) ||
+      !(stock_quantity >= 1) ||
+      !(visitor_quantity >= 1 <= 5);
+
+    setIsButtonDisabled(isButtonDisabled);
+
   };
 
-  const handleCreateTicket = async (newTicketData) => {
-    try {
-      await createTicket(newTicketData);
-      alert("Tiket berhasil ditambahkan!");
-      setTicketData({
-        name: '',
-        price: '',
-        stock_quantity: '',
-        visitor_quantity: '',
-        description: '',
-      });
-    } catch (error) {
-      alert("Gagal menambahkan tiket!");
-    }
+  const handleCancel = () => {
+    navigate(-1);
   };
 
+  const handleCreate = (e) => {
+    e.preventDefault();
+    handleCreateTicket(ticketData);
+  };
+
+  const confirmDelete = (id) => {
+    setSelectedTicketId(id);
+    setShowModal(true);
+  };
+
+  const cancelDelete = () => {
+    setShowModal(false);
+    setSelectedTicketId(null);
+  };
+
+  const proceedDelete = () => {
+    handleDeleteTicket(selectedTicketId);
+    setShowModal(false);
+    setSelectedTicketId(null);
+  };
 
   useEffect(() => {
     handleGetTickets();
@@ -98,6 +188,18 @@ const useTicketHook = () => {
     handleGetTicketById,
     handleUpdateTicket,
     handleCreateTicket,
+    isBusy,
+    handleInputChange,
+    handleCancel,
+    handleCreate,
+    showModal,
+    setShowModal,
+    selectedTicketId,
+    setSelectedTicketId,
+    confirmDelete,
+    cancelDelete,
+    proceedDelete,
+    isButtonDisabled,
   };
 };
 

@@ -1,44 +1,45 @@
 import React, { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
-import EmployeeForm from "../components/employee/EmployeeForm";
-import useEmployeeHook from "../hooks/useEmployeeHook";
+import InventoryForm from "../components/inventory/InventoryForm";
+import useInventoryHook from "../hooks/useInventoryHook";
 
-const EditEmployee = () => {
+const EditInventory = () => {
   const { id } = useParams();
   const {
-    employeeData,
-    handleGetEmployeeById,
+    inventoryData,
+    handleGetInventoryById,
     image,
     handleImageChange,
     inputFileRef,
     handleCancel,
     handleInputChange,
-    handleUpdateEmployee,
+    handleUpdateInventory,
     isButtonDisabled,
-  } = useEmployeeHook();
 
-  const fetchEmployee = useCallback(() => {
-    handleGetEmployeeById(id);
-  }, [id, handleGetEmployeeById]);
+  } = useInventoryHook();
+
+  const fetchInventory = useCallback(() => {
+    handleGetInventoryById(id);
+  }, [id, handleGetInventoryById]);
 
   const handleSave = async (e) => {
     e.preventDefault();
-    await handleUpdateEmployee(id, employeeData);
+    await handleUpdateInventory(id, inventoryData);
   }
   
   useEffect(() => {
-    fetchEmployee();
-  }, [fetchEmployee]);
+    fetchInventory();
+  }, [fetchInventory]);
 
   return (
     <div className="flex-1 min-h-screen p-4 py-10 overflow-auto bg-gray-100 lg:ml-64">
       <PageHeader
-        title="Edit Pegawai"
-        subtitle="Ini adalah halaman untuk memperbarui data pegawai."
+        title="Edit Inventaris"
+        subtitle="Ini adalah halaman untuk memperbarui data inventaris."
       />
-      <EmployeeForm
-        employeeData={employeeData}
+      <InventoryForm
+        inventoryData={inventoryData}
         onChange={handleInputChange}
         onSubmit={handleSave}
         onCancel={handleCancel}
@@ -53,4 +54,4 @@ const EditEmployee = () => {
   );
 };
 
-export default EditEmployee;
+export default EditInventory;

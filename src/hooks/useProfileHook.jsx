@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getProfile, updateProfile, addProfilePicture } from '../services/api/apiProfile';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; 
 
 const useProfileHook = () => {
+    const navigate = useNavigate();
     const [profileData, setProfileData] = useState({
         email: '',
         username: '',
@@ -9,53 +12,73 @@ const useProfileHook = () => {
         phone_number: '',
         password: '',
         bio: '',
-        profile_picture: null,
+        picture: null,
     });
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [updating, setUpdating] = useState(false);
+    const isBusy = () => loading || uploading || updating;
+
+    const setLoadingState = (type, value) => {
+        if (type === 'loading') {
+            setLoading(value);
+        } else if (type === 'uploading') {
+            setUploading(value);
+        } else if (type === 'updating') { 
+            setUpdating(value);
+        }
+    };
 
     const handleGetProfile = async () => {
+        setLoadingState('loading', true);
         try {
             const response = await getProfile();
             setProfileData(response.data);
         } catch (error) {
-            alert('Gagal memuat data profil!');
+            const errorMessage =  'Gagal memuat data profil!';
+            toast.error(errorMessage);
         } finally {
-            setLoading(false);
+            setLoadingState('loading', false);
         }
     };
 
     const handleUpdateProfile = async () => {
+        setLoadingState('updating', true);
         try {
-            await updateProfile(profileData);
-            alert('Perubahan berhasil disimpan!');
+            const { picture, ...dataWithoutPicture } = profileData;
+            await updateProfile(dataWithoutPicture);
+            toast.success('Perubahan berhasil disimpan!');
+            navigate(-1);
+            handleGetProfile();
         } catch (error) {
-            alert('Terjadi kesalahan saat menyimpan perubahan!');
+            const errorMessage =  'Terjadi kesalahan saat menyimpan perubahan!';
+            toast.error(errorMessage);
+        } finally {
+            setLoadingState('updating', false);
         }
     };
 
     const handleAddProfilePicture = async (file) => {
         if (!file) {
-            alert('Harap pilih file gambar!');
+            toast.warning('Harap pilih file gambar!');
             return;
         }
-    
+
         const formData = new FormData();
         formData.append('picture', file);
-    
-        setUploading(true);
+
+        setLoadingState('uploading', true);
         try {
-            const response = await addProfilePicture(formData);
-            alert('Foto profil berhasil diunggah!');
-            await handleGetProfile(); 
+            await addProfilePicture(formData);
+            toast.success('Foto profil berhasil diunggah!');
+            await handleGetProfile();
         } catch (error) {
-            alert('Terjadi kesalahan saat mengunggah foto profil!');
-            console.error('Error Details:', error.response?.data || error.message);
+            const errorMessage =  'Terjadi kesalahan saat mengunggah foto profil!';
+            toast.error(errorMessage);
         } finally {
-            setUploading(false);
+            setLoadingState('uploading', false);
         }
     };
-    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -69,6 +92,16 @@ const useProfileHook = () => {
         }
     };
 
+    const handleSave = async (e) => {
+        e.preventDefault();
+        await handleUpdateProfile(); 
+    };
+    
+
+    const handleCancel = () => {
+        navigate(-1);
+    };
+
     useEffect(() => {
         handleGetProfile();
     }, []);
@@ -77,10 +110,15 @@ const useProfileHook = () => {
         profileData,
         loading,
         uploading,
+        updating,
+        isBusy,
         handleInputChange,
         handleImageChange,
         handleUpdateProfile,
         setProfileData,
+        handleGetProfile,
+        handleSave,
+        handleCancel,
     };
 };
 

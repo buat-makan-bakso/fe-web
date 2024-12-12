@@ -1,19 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Modal from "react-modal"; 
+import Modal from "react-modal";
 import {
-  getEmployees,
-  deleteEmployee,
-  getEmployeeById,
-  updateEmployee,
-  createEmployee,
-} from "../services/api/apiEmployee";
+  getInventorys,
+  deleteInventory,
+  getInventoryById,
+  updateInventory,
+  createInventory,
+} from "../services/api/apiInventory";
 import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
-const useEmployeeHook = () => {
+const useInventoryHook = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [employees, setEmployees] = useState([]);
+  const [inventorys, setInventorys] = useState([]);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [total, setTotal] = useState(0);
@@ -21,11 +21,11 @@ const useEmployeeHook = () => {
   const [image, setImage] = useState(null);
   const inputFileRef = useRef(null);
   const navigate = useNavigate();
-  const [employeeData, setEmployeeData] = useState({
-    nip: "",
+  const [inventoryData, setInventoryData] = useState({
+    code: "",
     name: "",
-    position: "",
-    phone_number: "",
+    stock_quantity: "",
+    price: "",
     picture: null,
   });
 
@@ -34,8 +34,8 @@ const useEmployeeHook = () => {
   const [updating, setUpdating] = useState(false);
   const isBusy = () => loading || uploading || updating;
 
-  const [showModal, setShowModal] = useState(false); 
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null); 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedInventoryId, setSelectedInventoryId] = useState(null);
 
 
   const setLoadingState = (type, value) => {
@@ -50,98 +50,101 @@ const useEmployeeHook = () => {
 
   const convertToFormData = (data) => {
     const formData = new FormData();
-    formData.append("nip", data.nip);
+    formData.append("code", data.code);
     formData.append("name", data.name);
-    formData.append("position", data.position);
-    formData.append("phone_number", data.phone_number);
+    formData.append("stock_quantity", data.stock_quantity);
+    formData.append("price", data.price);
     formData.append("picture", data.picture);
 
     return formData;
   };
 
-  const handleGetEmployees = async () => {
+  const handleGetInventorys = async () => {
     setLoadingState("loading", true);
     try {
-      const response = await getEmployees(page, query);
-      setEmployees(response.data.rows);
+      const response = await getInventorys(page, query);
+      setInventorys(response.data.rows);
       setTotal(response.data.total);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      const errorMessage = "Gagal mengambil data pegawai!";
+      const errorMessage = "Gagal mengambil data inventaris!";
       toast.error(errorMessage);
     } finally {
       setLoadingState("loading", false);
     }
   };
 
-  const handleDeleteEmployee = async (id) => {
+  const handleDeleteInventory = async (id) => {
 
-      setLoadingState("loading", true);
-      try {
-        await deleteEmployee(id);
-        toast.success("Pegawai berhasil dihapus!");
-        handleGetEmployees();
-      } catch (error) {
-        const errorMessage = "Gagal menghapus pegawai. Silakan coba lagi!";
-        toast.error(errorMessage);
-      } finally {
-        setLoadingState("loading", false);
-        setShowModal(false); 
-      }
-    
-  };
-
-  const handleGetEmployeeById = useCallback(async (id) => {
     setLoadingState("loading", true);
     try {
-      const response = await getEmployeeById(id);
-      setEmployeeData(response.data);
+      await deleteInventory(id);
+      toast.success("Inventaris berhasil dihapus!");
+      handleGetInventorys();
     } catch (error) {
-      const errorMessage = "Gagal mengambil data pegawai!";
+      const errorMessage = "Gagal menghapus inventaris. Silakan coba lagi!";
+      toast.error(errorMessage);
+    } finally {
+      setLoadingState("loading", false);
+      setShowModal(false);
+    }
+
+  };
+
+  const handleGetInventoryById = useCallback(async (id) => {
+    setLoadingState("loading", true);
+    try {
+      const response = await getInventoryById(id);
+      setInventoryData(response.data);
+    } catch (error) {
+      const errorMessage = "Gagal mengambil data inventaris!";
       toast.error(errorMessage);
     } finally {
       setLoadingState("loading", false);
     }
   }, []);
 
-  const handleUpdateEmployee = async (id) => {
+  const handleUpdateInventory = async (id) => {
     setLoadingState("updating", true);
     try {
-      const formData = convertToFormData(employeeData);
-      await updateEmployee(id, formData);
-      toast.success("Pegawai berhasil diperbarui!");
-      handleGetEmployees();
+      const formData = convertToFormData(inventoryData);
+      await updateInventory(id, formData);
+      toast.success("Inventaris berhasil diperbarui!");
+      handleGetInventorys();
       navigate(-1);
     } catch (error) {
-      const errorMessage = "Gagal memperbarui pegawai!";
+      const errorMessage = "Gagal memperbarui inventaris!";
       toast.error(errorMessage);
-
     } finally {
       setLoadingState("updating", false);
     }
   };
 
-  const handleCreateEmployee = async () => {
+  const handleCreateInventory = async () => {
     setLoadingState("updating", true);
     try {
-      const formData = convertToFormData(employeeData);
-      await createEmployee(formData);
-      toast.success("Pegawai berhasil ditambahkan!");
-      setEmployeeData({
-        nip: "",
+      const formData = convertToFormData(inventoryData);
+      await createInventory(formData);
+      toast.success("Inventaris berhasil ditambahkan!");
+      setInventoryData({
+        code: "",
         name: "",
-        position: "",
-        phone_number: "",
+        stock_quantity: "",
+        price: "",
         picture: null,
       });
       setImage(null);
       if (inputFileRef.current) {
         inputFileRef.current.value = "";
       }
-      handleGetEmployees();
+      handleGetInventorys();
     } catch (error) {
-      const errorMessage = "Gagal menambahkan pegawai!";
+      const errorMessage = "Gagal menambahkan inventaris!";
       toast.error(errorMessage);
+
+      console.log(inventoryData);
+
+
     } finally {
       setLoadingState("updating", false);
     }
@@ -150,7 +153,7 @@ const useEmployeeHook = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setEmployeeData((prevData) => ({
+      setInventoryData((prevData) => ({
         ...prevData,
         picture: file,
       }));
@@ -160,14 +163,14 @@ const useEmployeeHook = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEmployeeData((prevData) => ({ ...prevData, [name]: value }));
+    setInventoryData((prevData) => ({...prevData, [name]: value }));
 
-    const { nip, position, phone_number} = { ...employeeData, [name]: value };
-
-    const isButtonDisabled =
-      !(nip && nip.length == 18) ||
-      !(position == null) ||
-      !(phone_number && phone_number.length > 10 <= 15);
+    const { code, price, stock_quantity } = { ...inventoryData, [name]: value };
+    
+    const isButtonDisabled = 
+      !(code && code.length == 5) || 
+      !(price >= 1000) ||              
+      !(stock_quantity > 0);      
 
     setIsButtonDisabled(isButtonDisabled);
   };
@@ -178,43 +181,43 @@ const useEmployeeHook = () => {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    handleCreateEmployee(employeeData);
+    handleCreateInventory(inventoryData);
   };
 
   const confirmDelete = (id) => {
-    setSelectedEmployeeId(id);
+    setSelectedInventoryId(id);
     setShowModal(true);
   };
 
   const cancelDelete = () => {
     setShowModal(false);
-    setSelectedEmployeeId(null);
+    setSelectedInventoryId(null);
   };
 
   const proceedDelete = () => {
-    handleDeleteEmployee(selectedEmployeeId);
+    handleDeleteInventory(selectedInventoryId);
     setShowModal(false);
-    setSelectedEmployeeId(null);
+    setSelectedInventoryId(null);
   };
 
   useEffect(() => {
-    handleGetEmployees();
+    handleGetInventorys();
   }, [page, query]);
 
   return {
-    employees,
+    inventorys,
     page,
     setPage,
     total,
     totalPages,
     setQuery,
-    handleGetEmployees,
-    handleDeleteEmployee,
-    employeeData,
-    setEmployeeData,
-    handleGetEmployeeById,
-    handleUpdateEmployee,
-    handleCreateEmployee,
+    handleGetInventorys,
+    handleDeleteInventory,
+    inventoryData,
+    setInventoryData,
+    handleGetInventoryById,
+    handleUpdateInventory,
+    handleCreateInventory,
     image,
     handleImageChange,
     inputFileRef,
@@ -224,8 +227,8 @@ const useEmployeeHook = () => {
     handleCreate,
     showModal,
     setShowModal,
-    selectedEmployeeId,
-    setSelectedEmployeeId,
+    selectedInventoryId,
+    setSelectedInventoryId,
     confirmDelete,
     cancelDelete,
     proceedDelete,
@@ -233,4 +236,4 @@ const useEmployeeHook = () => {
   };
 };
 
-export default useEmployeeHook;
+export default useInventoryHook;

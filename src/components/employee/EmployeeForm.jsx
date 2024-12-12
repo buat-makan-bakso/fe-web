@@ -1,6 +1,6 @@
 import React from "react";
 
-const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit }) => {
+const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit, handleImageChange, image, inputFileRef, isButtonDisabled }) => {
     return (
         <div className="p-4 mb-6 bg-white rounded-lg md:p-6">
             <h3 className="mb-6 text-lg font-bold">{isEdit ? "EDIT DATA" : "ENTRI DATA"}</h3>
@@ -10,10 +10,12 @@ const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit }) =>
                     <input
                         type="text"
                         name="nip"
-                        value={employeeData.nip}
+                        value={employeeData.nip || ''}
                         onChange={onChange}
                         placeholder="Masukan NIP"
                         className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        maxLength={18}
+                        minLength={18}
                     />
                 </div>
 
@@ -23,10 +25,12 @@ const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit }) =>
                         <input
                             type="text"
                             name="name"
-                            value={employeeData.name}
+                            value={employeeData.name || ''}
                             onChange={onChange}
                             placeholder="Masukan Nama"
                             className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            minLength={1}
+                            maxLength={50}
                         />
                     </div>
                     <div>
@@ -34,7 +38,7 @@ const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit }) =>
                         <input
                             type="text"
                             name="position"
-                            value={employeeData.position}
+                            value={employeeData.position || ''}
                             onChange={onChange}
                             placeholder="Masukan Posisi"
                             className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -45,13 +49,35 @@ const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit }) =>
                 <div>
                     <label className="block mb-2 text-sm font-semibold">NO HP</label>
                     <input
-                        type="text"
+                        type="number"
                         name="phone_number"
-                        value={employeeData.phone_number}
+                        value={employeeData.phone_number || ''}
                         onChange={onChange}
                         placeholder="Masukan NO HP"
                         className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        minLength={10}
+                        maxLength={15}
                     />
+                </div>
+
+                <div>
+                    <label className="block mb-2 text-sm font-semibold">FOTO</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        ref={inputFileRef}
+                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                    {image || employeeData.picture ? (
+                        <div className="mt-4">
+                            <img
+                                src={image || employeeData.picture}
+                                alt="Preview"
+                                className="w-full max-w-md rounded"
+                            />
+                        </div>
+                    ) : null}
                 </div>
 
                 <div className="flex flex-col justify-end gap-3 pt-4 sm:flex-row">
@@ -75,8 +101,12 @@ const EmployeeForm = ({ employeeData, onChange, onSubmit, onCancel, isEdit }) =>
                         Kembali
                     </button>
                     <button
-                        className="flex items-center justify-center w-full gap-2 px-6 py-2 text-white transition-colors bg-teal-600 rounded-lg sm:w-auto hover:bg-teal-700"
+                        className={`flex items-center justify-center w-full gap-2 px-6 py-2 text-white transition-colors rounded-lg sm:w-auto ${isButtonDisabled
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-teal-600 hover:bg-teal-700'
+                            }`}
                         onClick={onSubmit}
+                        disabled={isButtonDisabled}
                     >
                         <svg
                             className="w-5 h-5"

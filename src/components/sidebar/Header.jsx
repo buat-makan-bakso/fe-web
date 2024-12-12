@@ -1,21 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
 
-const Header = ({ profileData, isOpen, toggleSidebar }) => (
+const Header = ({ profileData, isOpen, toggleSidebar, isBusy }) => (
   <div className="fixed top-0 left-0 w-full bg-white z-5">
     <div className="flex items-center justify-between px-4 h-14">
       <div className="flex items-center ml-0 md:ml-64">
-        <span className="text-lg font-bold">Halo, {profileData.username || "User"}!</span>
-        <span className="ml-2 text-sm text-gray-500">Selamat Datang Di Verdant</span>
+        <span className="text-lg font-bold">
+          {isBusy() ? <Skeleton width={100} /> : `Halo, ${profileData.username || "User"}!`}
+        </span>
+        <span className="ml-2 text-sm text-gray-500">
+          {isBusy() ? <Skeleton width={150} /> : "Selamat Datang Di Verdant"}
+        </span>
       </div>
       <div className="flex items-center">
         <Link to="/pengaturan" className="flex items-center cursor-pointer">
-          <img
-            src={profileData.picture || "https://th.bing.com/th/id/OIP.9PPdes_WSxaqUQJxWab16AHaHa?rs=1&pid=ImgDetMain"}
-            alt="Profile"
-            className="w-8 h-8 rounded-full"
-          />
-          <span className="px-5">{profileData.username || "Username"}</span>
+          {isBusy() ? (
+            <Skeleton circle={true} height={32} width={32} />
+          ) : (
+            <img
+              src={profileData.picture || "https://th.bing.com/th/id/OIP.9PPdes_WSxaqUQJxWab16AHaHa?rs=1&pid=ImgDetMain"}
+              alt="Profile"
+              className="w-8 h-8 rounded-full"
+            />
+          )}
+          <span className="px-5">
+            {isBusy() ? <Skeleton width={100} /> : profileData.username || "Username"}
+          </span>
         </Link>
         <button className="p-2 md:hidden focus:outline-none" onClick={toggleSidebar}>
           <svg

@@ -1,19 +1,19 @@
 import React from "react";
 import PageHeader from "../components/PageHeader";
-import EmployeeForm from "../components/employee/EmployeeForm";
-import useEmployeeHook from "../hooks/useEmployeeHook";
+import InventoryForm from "../components/inventory/InventoryForm";
+import useInventoryHook from "../hooks/useInventoryHook";
 
-const CreateEmployee = () => {
-  const { employeeData, handleCreate, handleImageChange, handleInputChange, handleCancel, image, inputFileRef, isButtonDisabled} = useEmployeeHook();
+const CreateInventory = () => {
+  const { inventoryData, handleCreate, handleImageChange, handleInputChange, handleCancel, image, inputFileRef, isButtonDisabled} = useInventoryHook();
 
   return (
     <div className="flex-1 min-h-screen p-4 py-10 overflow-auto bg-gray-100 lg:ml-64">
       <PageHeader
-        title="Kelola Pegawai"
-        subtitle="Ini adalah halaman untuk mengelola data pegawai."
+        title="Kelola Inventaris"
+        subtitle="Ini adalah halaman untuk mengelola data inventory."
       />
-      <EmployeeForm
-        employeeData={employeeData}
+      <InventoryForm
+        inventoryData={inventoryData}
         onChange={handleInputChange}
         onSubmit={handleCreate}
         onCancel={handleCancel}
@@ -27,4 +27,4 @@ const CreateEmployee = () => {
   );
 };
 
-export default CreateEmployee;
+export default CreateInventory;
