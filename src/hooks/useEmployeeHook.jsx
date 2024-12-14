@@ -161,16 +161,18 @@ const useEmployeeHook = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEmployeeData((prevData) => ({ ...prevData, [name]: value }));
-
-    const { nip, position, phone_number} = { ...employeeData, [name]: value };
-
+  
+    const { nip, position, phone_number } = { ...employeeData, [name]: value };
+  
     const isButtonDisabled =
-      !(nip && nip.length == 18) ||
-      !(position == null) ||
-      !(phone_number && phone_number.length > 10 <= 15);
-
+      nip.length !== 18 ||               
+      position.trim().length === 0 ||  
+      phone_number.length < 10 ||     
+      phone_number.length > 15;        
+  
     setIsButtonDisabled(isButtonDisabled);
   };
+  
 
   const handleCancel = () => {
     navigate(-1);

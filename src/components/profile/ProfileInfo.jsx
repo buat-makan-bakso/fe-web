@@ -13,8 +13,8 @@ const ProfileInfo = ({ profile, onEditClick }) => {
                     <p className="font-semibold">Password</p>
                     <p className="text-gray-600">••••••••</p> { }
                 </div>
-                <ProfileDetail label="Alamat" value={profile.address || 'Garut, Jawa Barat'} />
-                <ProfileDetail label="Bio" value={profile.bio || 'Pengelola Agrowisata Tepas Papandayan'} />
+                <ProfileDetail label="Alamat" value={profile.address || '-'} />
+                <ProfileDetail label="Bio" value={profile.bio || '-'} />
             </div>
             <button className="px-4 py-2 m-5 mx-auto text-white bg-teal-600 rounded" onClick={onEditClick}>
                 Edit
